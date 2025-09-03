@@ -1,0 +1,37 @@
+name: 'Terraform Plan on PR'
+
+# This workflow runs on pull requests targeting the main branch.
+on:
+  pull_request:
+    branches:
+      - main
+
+# Defines the permissions for the job.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform-plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checks out your repository code.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Step 2: Installs and configures Terraform CLI.
+      # It uses the TF_API_TOKEN to authenticate with Terraform Cloud.
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      # Step 3: Initializes Terraform to download provider plugins.
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 4: Runs 'terraform plan' to see what changes will be made.
+      - name: Terraform Plan
+        run: terraform plan
