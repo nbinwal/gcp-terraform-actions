@@ -1,28 +1,36 @@
 # This block configures Terraform itself, including the backend where the state is stored.
 terraform {
   cloud {
-    # Replace with your actual TFC organization name.
     organization = "neelesh-cloud"
-
-    # This connects the code to the specific TFC workspace you created earlier.
     workspaces {
       name = "gcp-production-infra"
     }
   }
 
-  # This block specifies the cloud provider we are using (Google Cloud).
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 5.0" # Use a recent version
+      version = "~> 5.0"
+    }
+    # We also need to add the random provider since it's being used.
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
 }
 
-# This configures the Google Cloud provider with your project details.
+# This new variable block receives the sensitive JSON key from Terraform Cloud.
+variable "gcp_credentials_json" {
+  type        = string
+  description = "The GCP service account key JSON, passed in as a variable."
+  sensitive   = true
+}
+
+# This updated provider block now uses the variable for authentication.
 provider "google" {
-  # Replace with your actual GCP Project ID.
-  project = "neelesh-project-468111"
+  project     = "neelesh-project-468111"
+  credentials = var.gcp_credentials_json # This line uses the credentials variable
 }
 
 # This resource defines a Google Cloud Storage bucket.
