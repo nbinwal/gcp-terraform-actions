@@ -3,7 +3,7 @@ terraform {
   cloud {
     organization = "neelesh-cloud"
     workspaces {
-      name = "gcp-production-infra"
+      name = "gcp-prod-infra"
     }
   }
 
