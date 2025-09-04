@@ -42,6 +42,10 @@ resource "google_storage_bucket" "website_bucket" {
   # This setting is useful for demos, allowing easy deletion.
   force_destroy = true
   uniform_bucket_level_access = true
+  labels = {
+    environment = "development"
+    managed-by  = "terraform"
+  }
 }
 
 # This resource generates a random string to ensure the bucket name is unique.
